@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles, Typography, Grid, Button, Theme, Hidden } from '@material-ui/core';
 import LocalVideoPreview from './LocalVideoPreview/LocalVideoPreview';
 import SettingsMenu from './SettingsMenu/SettingsMenu';
@@ -7,6 +7,8 @@ import ToggleAudioButton from '../../Buttons/ToggleAudioButton/ToggleAudioButton
 import ToggleVideoButton from '../../Buttons/ToggleVideoButton/ToggleVideoButton';
 import { useAppState } from '../../../state';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import { useParams } from 'react-router-dom';
+import { setTokenSourceMapRange } from 'typescript';
 
 const useStyles = makeStyles((theme: Theme) => ({
   gutterBottom: {
@@ -58,20 +60,25 @@ interface DeviceSelectionScreenProps {
 
 export default function DeviceSelectionScreen({ name, roomName, setStep }: DeviceSelectionScreenProps) {
   const classes = useStyles();
+  // @ts-ignore
+  const { URLtoken } = useParams();
   const { getToken, isFetching } = useAppState();
   const { connect, isAcquiringLocalTracks, isConnecting } = useVideoContext();
   const disableButtons = isFetching || isAcquiringLocalTracks || isConnecting;
+  const [token, setToken] = React.useState('');
+
+  useEffect(() => {
+    if (URLtoken) {
+      setToken(URLtoken);
+    }
+  }, []);
 
   const handleJoin = () => {
-    getToken(name, roomName).then(token => connect(token));
+    getToken(token).then(token => connect(token));
   };
 
   return (
     <>
-      <Typography variant="h5" className={classes.gutterBottom}>
-        Join {roomName}
-      </Typography>
-
       <Grid container justify="center">
         <Grid item md={7} sm={12} xs={12}>
           <div className={classes.localPreviewContainer}>
@@ -94,9 +101,6 @@ export default function DeviceSelectionScreen({ name, roomName, setStep }: Devic
               </Hidden>
             </div>
             <div className={classes.joinButtons}>
-              <Button variant="outlined" color="primary" onClick={() => setStep(Steps.roomNameStep)}>
-                Cancel
-              </Button>
               <Button
                 variant="contained"
                 color="primary"

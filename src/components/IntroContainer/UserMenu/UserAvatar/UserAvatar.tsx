@@ -21,11 +21,10 @@ export function getInitials(name: string) {
 
 export default function UserAvatar({ user }: { user: StateContextType['user'] }) {
   const classes = useStyles();
-  const { displayName, photoURL } = user!;
+  const { displayName } = user!;
 
-  return photoURL ? (
-    <Avatar src={photoURL} />
-  ) : (
-    <Avatar className={classes.red}>{displayName ? getInitials(displayName) : <Person />}</Avatar>
-  );
+  /**
+   * snugg does not currently show avatars within the sessions.
+   */
+  return <Avatar className={classes.red}>{displayName ? getInitials(displayName) : <Person />}</Avatar>;
 }

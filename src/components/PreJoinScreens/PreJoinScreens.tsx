@@ -17,6 +17,10 @@ export enum Steps {
 export default function PreJoinScreens() {
   const { user } = useAppState();
   const { getAudioAndVideoTracks } = useVideoContext();
+  /**
+   * The URLRoomName is the sessionId.
+   */
+  // @ts-ignore
   const { URLRoomName } = useParams();
   const [step, setStep] = useState(Steps.roomNameStep);
 
@@ -28,7 +32,7 @@ export default function PreJoinScreens() {
   useEffect(() => {
     if (URLRoomName) {
       setRoomName(URLRoomName);
-      if (user?.displayName) {
+      if (user?.displayName !== undefined) {
         setStep(Steps.deviceSelectionStep);
       }
     }

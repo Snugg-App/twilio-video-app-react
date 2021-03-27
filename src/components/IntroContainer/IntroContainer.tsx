@@ -41,13 +41,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundImage: Swoosh,
+    backgroundImage: 'linear-gradient(to bottom right, black, white);',
     backgroundSize: 'cover',
     width: '296px',
     [theme.breakpoints.down('sm')]: {
       width: '100%',
       height: '100px',
-      backgroundPositionY: '140px',
     },
   },
   logoContainer: {
@@ -81,9 +80,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   title: {
     color: 'white',
-    margin: '1em 0 0',
+    margin: '1em',
     [theme.breakpoints.down('sm')]: {
-      margin: 0,
       fontSize: '1.1rem',
     },
   },
@@ -114,7 +112,7 @@ const IntroContainer = (props: IntroContainerProps) => {
             <div className={classes.logoContainer}>
               <VideoLogo />
               <Typography variant="h6" className={classes.title}>
-                Twilio Programmable Video
+                Snugg Video
               </Typography>
             </div>
           </div>

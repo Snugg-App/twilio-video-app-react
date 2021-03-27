@@ -4,16 +4,16 @@ import { TwilioError } from 'twilio-video';
 import { settingsReducer, initialSettings, Settings, SettingsAction } from './settings/settingsReducer';
 import useActiveSinkId from './useActiveSinkId/useActiveSinkId';
 import useFirebaseAuth from './useFirebaseAuth/useFirebaseAuth';
-import usePasscodeAuth from './usePasscodeAuth/usePasscodeAuth';
-import { User } from 'firebase';
+
+export interface SnuggUser {
+  displayName: string;
+}
 
 export interface StateContextType {
   error: TwilioError | null;
   setError(error: TwilioError | null): void;
-  getToken(name: string, room: string, passcode?: string): Promise<string>;
-  user?: User | null | { displayName: undefined; photoURL: undefined; passcode?: string };
-  signIn?(passcode?: string): Promise<void>;
-  signOut?(): Promise<void>;
+  getToken(token: string): Promise<string>;
+  user?: SnuggUser | null | { displayName: undefined };
   isAuthReady?: boolean;
   isFetching: boolean;
   activeSinkId: string;
@@ -50,33 +50,27 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     dispatchSetting,
   } as StateContextType;
 
-  if (process.env.REACT_APP_SET_AUTH === 'firebase') {
-    contextValue = {
-      ...contextValue,
-      ...useFirebaseAuth(), // eslint-disable-line react-hooks/rules-of-hooks
-    };
-  } else if (process.env.REACT_APP_SET_AUTH === 'passcode') {
-    contextValue = {
-      ...contextValue,
-      ...usePasscodeAuth(), // eslint-disable-line react-hooks/rules-of-hooks
-    };
-  } else {
-    contextValue = {
-      ...contextValue,
-      getToken: async (identity, roomName) => {
-        const headers = new window.Headers();
-        const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
-        const params = new window.URLSearchParams({ identity, roomName });
+  /**
+   * Snugg will only use firebase AUTH, but currently only cares about
+   * who owns the snuggery.
+   */
+  contextValue = {
+    ...contextValue,
+    ...useFirebaseAuth(), // eslint-disable-line react-hooks/rules-of-hooks
+  };
 
-        return fetch(`${endpoint}?${params}`, { headers }).then(res => res.text());
-      },
-    };
-  }
+  contextValue.roomType = 'go';
 
-  const getToken: StateContextType['getToken'] = (name, room) => {
+  console.log('contextValue', contextValue);
+
+  /**
+   * Wrapper for the getToken found within useFirebaseAuth.js
+   * @param room
+   */
+  const getToken: StateContextType['getToken'] = room => {
     setIsFetching(true);
     return contextValue
-      .getToken(name, room)
+      .getToken(room)
       .then(res => {
         setIsFetching(false);
         return res;

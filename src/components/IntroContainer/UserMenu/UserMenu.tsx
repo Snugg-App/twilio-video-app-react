@@ -26,58 +26,9 @@ const useStyles = makeStyles({
 });
 
 const UserMenu: React.FC = () => {
-  const classes = useStyles();
-  const { user, signOut } = useAppState();
-  const { localTracks } = useVideoContext();
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const anchorRef = useRef<HTMLButtonElement>(null);
-
-  const handleSignOut = useCallback(() => {
-    localTracks.forEach(track => track.stop());
-    signOut?.();
-  }, [localTracks, signOut]);
-
-  if (process.env.REACT_APP_SET_AUTH === 'passcode') {
-    return (
-      <div className={classes.userContainer}>
-        <Link onClick={handleSignOut} className={classes.logoutLink}>
-          Logout
-        </Link>
-      </div>
-    );
-  }
-
-  if (process.env.REACT_APP_SET_AUTH === 'firebase') {
-    return (
-      <div className={classes.userContainer}>
-        <UserAvatar user={user} />
-        <Button onClick={() => setMenuOpen(isOpen => !isOpen)} ref={anchorRef} className={classes.userButton}>
-          {user!.displayName}
-          <ExpandMoreIcon />
-        </Button>
-        <Menu
-          open={menuOpen}
-          onClose={() => setMenuOpen(isOpen => !isOpen)}
-          anchorEl={anchorRef.current}
-          getContentAnchorEl={null}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-          <MenuItem onClick={handleSignOut}>
-            <Typography variant="body1">Logout</Typography>
-          </MenuItem>
-        </Menu>
-      </div>
-    );
-  }
-
+  /**
+   * Snugg doesn't need to display the UserMenu.
+   */
   return null;
 };
 
