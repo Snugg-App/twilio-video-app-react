@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { makeStyles, Typography, Grid, Button, Theme, Hidden } from '@material-ui/core';
+import { makeStyles, Grid, Button, Theme, Hidden } from '@material-ui/core';
 import LocalVideoPreview from './LocalVideoPreview/LocalVideoPreview';
 import SettingsMenu from './SettingsMenu/SettingsMenu';
 import { Steps } from '../PreJoinScreens';
@@ -8,7 +8,6 @@ import ToggleVideoButton from '../../Buttons/ToggleVideoButton/ToggleVideoButton
 import { useAppState } from '../../../state';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 import { useParams } from 'react-router-dom';
-import { setTokenSourceMapRange } from 'typescript';
 
 const useStyles = makeStyles((theme: Theme) => ({
   gutterBottom: {
@@ -71,10 +70,10 @@ export default function DeviceSelectionScreen({ name, roomName, setStep }: Devic
     if (URLtoken) {
       setToken(URLtoken);
     }
-  }, []);
+  }, [URLtoken]);
 
   const handleJoin = () => {
-    getToken(token).then(token => connect(token));
+    getToken(token).then(theToken => connect(theToken));
   };
 
   return (

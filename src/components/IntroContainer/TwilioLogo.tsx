@@ -7,6 +7,7 @@ export default function TwilioLogo(props: SVGProps<SVGSVGElement>) {
       src="https://snugg-qa.firebaseapp.com/img/Snugg_Monogram_white.png"
       height="30"
       width="30"
+      alt="Snugg Logo"
     />
   );
 }

@@ -15,8 +15,8 @@ export default function useGetPreflightTokens() {
       setIsFetching(true);
 
       Promise.all([getToken(roomName), getToken(roomName)])
-        .then(tokens => {
-          setTokens(tokens);
+        .then(theTokens => {
+          setTokens(theTokens);
           setIsFetching(false);
         })
         .catch(error => setTokenError(error));
