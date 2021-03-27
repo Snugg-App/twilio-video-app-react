@@ -20,12 +20,10 @@ const VideoApp = () => {
   const connectionOptions = useConnectionOptions();
 
   return (
-    <UnsupportedBrowserWarning>
-      <VideoProvider options={connectionOptions} onError={setError}>
-        <ErrorDialog dismissError={() => setError(null)} error={error} />
-        <App />
-      </VideoProvider>
-    </UnsupportedBrowserWarning>
+    <VideoProvider options={connectionOptions} onError={setError}>
+      <ErrorDialog dismissError={() => setError(null)} error={error} />
+      <App />
+    </VideoProvider>
   );
 };
 
