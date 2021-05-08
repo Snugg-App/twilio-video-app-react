@@ -1,12 +1,5 @@
-import React, { createContext, ReactNode } from 'react';
-import {
-  CreateLocalTrackOptions,
-  ConnectOptions,
-  LocalAudioTrack,
-  LocalVideoTrack,
-  Room,
-  TwilioError,
-} from 'twilio-video';
+import React, { createContext, ReactNode, useCallback } from 'react';
+import { CreateLocalTrackOptions, ConnectOptions, LocalAudioTrack, LocalVideoTrack, Room } from 'twilio-video';
 import { ErrorCallback } from '../../types';
 import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
 
@@ -14,6 +7,7 @@ import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityH
 import useHandleRoomDisconnection from './useHandleRoomDisconnection/useHandleRoomDisconnection';
 import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
 import useLocalTracks from './useLocalTracks/useLocalTracks';
+import useRestartAudioTrackOnDeviceChange from './useRestartAudioTrackOnDeviceChange/useRestartAudioTrackOnDeviceChange';
 import useRoom from './useRoom/useRoom';
 import useScreenShareToggle from './useScreenShareToggle/useScreenShareToggle';
 
@@ -48,10 +42,13 @@ interface VideoProviderProps {
 }
 
 export function VideoProvider({ options, children, onError = () => {} }: VideoProviderProps) {
-  const onErrorCallback = (error: TwilioError) => {
-    console.log(`ERROR: ${error.message}`, error);
-    onError(error);
-  };
+  const onErrorCallback: ErrorCallback = useCallback(
+    error => {
+      console.log(`ERROR: ${error.message}`, error);
+      onError(error);
+    },
+    [onError]
+  );
 
   const {
     localTracks,
@@ -76,6 +73,7 @@ export function VideoProvider({ options, children, onError = () => {} }: VideoPr
     toggleScreenShare
   );
   useHandleTrackPublicationFailed(room, onError);
+  useRestartAudioTrackOnDeviceChange(localTracks);
 
   return (
     <VideoContext.Provider

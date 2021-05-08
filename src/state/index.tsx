@@ -10,10 +10,10 @@ export interface SnuggUser {
 }
 
 export interface StateContextType {
-  error: TwilioError | null;
-  setError(error: TwilioError | null): void;
   getToken(token: string): Promise<string>;
   user?: SnuggUser | null | { displayName: undefined };
+  error: TwilioError | Error | null;
+  setError(error: TwilioError | Error | null): void;
   isAuthReady?: boolean;
   isFetching: boolean;
   activeSinkId: string;

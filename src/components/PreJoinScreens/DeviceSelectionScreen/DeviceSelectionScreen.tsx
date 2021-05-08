@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
-import { makeStyles, Grid, Button, Theme, Hidden } from '@material-ui/core';
+import { makeStyles, Typography, Grid, Button, Theme, Hidden } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import LocalVideoPreview from './LocalVideoPreview/LocalVideoPreview';
 import SettingsMenu from './SettingsMenu/SettingsMenu';
 import { Steps } from '../PreJoinScreens';
 import ToggleAudioButton from '../../Buttons/ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from '../../Buttons/ToggleVideoButton/ToggleVideoButton';
 import { useAppState } from '../../../state';
+import useChatContext from '../../../hooks/useChatContext/useChatContext';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 import { useParams } from 'react-router-dom';
 
@@ -62,7 +64,8 @@ export default function DeviceSelectionScreen({ name, roomName, setStep }: Devic
   // @ts-ignore
   const { URLtoken } = useParams();
   const { getToken, isFetching } = useAppState();
-  const { connect, isAcquiringLocalTracks, isConnecting } = useVideoContext();
+  const { connect: chatConnect } = useChatContext();
+  const { connect: videoConnect, isAcquiringLocalTracks, isConnecting } = useVideoContext();
   const disableButtons = isFetching || isAcquiringLocalTracks || isConnecting;
   const [token, setToken] = React.useState('');
 
@@ -73,8 +76,23 @@ export default function DeviceSelectionScreen({ name, roomName, setStep }: Devic
   }, [URLtoken]);
 
   const handleJoin = () => {
-    getToken(token).then(theToken => connect(theToken));
+    getToken(token).then(theToken => videoConnect(theToken));
   };
+
+  if (isFetching || isConnecting) {
+    return (
+      <Grid container justify="center" alignItems="center" direction="column" style={{ height: '100%' }}>
+        <div>
+          <CircularProgress variant="indeterminate" />
+        </div>
+        <div>
+          <Typography variant="body2" style={{ fontWeight: 'bold', fontSize: '16px' }}>
+            Joining Meeting
+          </Typography>
+        </div>
+      </Grid>
+    );
+  }
 
   return (
     <>
