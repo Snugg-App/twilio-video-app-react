@@ -59,7 +59,7 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     ...useFirebaseAuth(), // eslint-disable-line react-hooks/rules-of-hooks
   };
 
-  contextValue.roomType = 'go';
+  contextValue.roomType = 'group';
 
   console.log('contextValue', contextValue);
 
